@@ -172,7 +172,7 @@ local function load_blames(callback)
 
     files_data_loading[filepath] = true
 
-    local command = [[jj --config ui.color=never file annotate --config templates.file_annotate='"separate(\"\n\", separate(\" \", commit.commit_id(), 99999, line_number, 1), \"author \" ++ commit.author().name(), \"author-time \" ++ commit.author().timestamp().format(\"%s\"), \"committer \" ++ commit.committer().name(), \"committer-time \" ++ commit.committer().timestamp().format(\"%s\"), \"summary \" ++ commit.description().first_line(), \"\t\" ++ content)++ \"\n\""' ]] .. vim.fn.shellescape(filepath)
+    local command = [[jj --ignore-working-copy --config ui.color=never file annotate --config templates.file_annotate='"separate(\"\n\", separate(\" \", commit.commit_id(), 99999, line_number, 1), \"author \" ++ commit.author().name(), \"author-time \" ++ commit.author().timestamp().format(\"%s\"), \"committer \" ++ commit.committer().name(), \"committer-time \" ++ commit.committer().timestamp().format(\"%s\"), \"summary \" ++ commit.description().first_line(), \"\t\" ++ content)++ \"\n\""' ]] .. vim.fn.shellescape(filepath)
 
     start_job(command, {
         on_stdout = function(data)
@@ -459,7 +459,7 @@ end
 
 ---@param callback fun(current_author: string)
 local function find_current_author(callback)
-    start_job("jj config get user.name", {
+    start_job("jj --ignore-working-copy config get user.name", {
         ---@param data string[]
         on_stdout = function(data)
             current_author = data[1]
@@ -514,7 +514,7 @@ end
 ---Returns SHA for the latest commit to the current branch.
 ---@param callback fun(sha: string)
 local function get_latest_sha(callback)
-    start_job("jj log -T 'commit_id' --no-graph -r @-", {
+    start_job("jj --ignore-working-copy log -T 'commit_id' --no-graph -r @-", {
         on_stdout = function(data)
             callback(data[1])
         end,

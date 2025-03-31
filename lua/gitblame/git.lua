@@ -141,7 +141,7 @@ local function get_current_branch(callback)
     if not utils.get_filepath() then
         return
     end
-    local command = utils.make_local_command([[jj --config ui.color=never log -r 'latest(ancestors(@) & bookmarks())' --no-graph -T 'self.local_bookmarks().join("\n")']])
+    local command = utils.make_local_command([[jj --ignore-working-copy --config ui.color=never log -r 'latest(ancestors(@) & bookmarks())' --no-graph -T 'self.local_bookmarks().join("\n")']])
 
     utils.start_job(command, {
         on_stdout = function(url)
@@ -219,7 +219,7 @@ function M.get_remote_url(callback)
     if not utils.get_filepath() then
         return
     end
-    local remote_url_command = utils.make_local_command("jj git remote list")
+    local remote_url_command = utils.make_local_command("jj --ignore-working-copy git remote list")
 
     utils.start_job(remote_url_command, {
         on_stdout = function(lines)
@@ -240,7 +240,7 @@ function M.get_repo_root(callback)
     if not utils.get_filepath() then
         return
     end
-    local command = utils.make_local_command("jj root")
+    local command = utils.make_local_command("jj --ignore-working-copy root")
 
     utils.start_job(command, {
         on_stdout = function(data)
